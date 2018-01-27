@@ -114,7 +114,9 @@ echo "CREATE USER $DB_CONNECT_USER IDENTIFIED WITH AWSAuthenticationPlugin AS 'R
 echo "GRANT ALL ON $DB_NAME.* TO $DB_CONNECT_USER@'%'" | mysql -h $DB_HOST -u $DB_ROOT_USER -p$DB_ROOT_PASS
 ```
 
-And now "la piece de résistance"! We're going to connect to the RDS instance with Perl! There us a script in this repository that will connect you to the RDS instance, calculating the signature beforehand.
+And now "la piece de résistance"! We're going to connect to the RDS instance!
+
+I've chosen to do this with Perl, since it has standard libraries to connect to MySQL, and I want to feel the experience of getting something not documented to work. There is a script in this repository that will connect you to the RDS instance, calculating the signature beforehand, and setting the appropiate client options to connect. Other languages libraries will certainly have similar options, but I'm sure that seeing how it's done in Perl will help you.
 
 ```
 ./rds_iam_connect.pl $DB_HOST $DB_CONNECT_USER $AWS_ACCESS_KEY $AWS_SECRET_KEY
@@ -137,6 +139,10 @@ Note: if you get an errors talking about "can't use DBI" or "can't find the mysq
 [How to generate auth tokens](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.Java.html)
 
 [Notes on how to build the IAM policy](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html)
+
+[DBD::MySQL options](https://metacpan.org/pod/DBD::mysql#mysql_ssl)
+
+[MySQL client cleartext password documentation](https://dev.mysql.com/doc/refman/5.5/en/cleartext-pluggable-authentication.html)
 
 ## Author, Copyright and License
 
