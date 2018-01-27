@@ -18,7 +18,7 @@ RDS databases start out with one initial user and password that you have configu
 
 If you like the idea of using IAM credentials to connect to your RDS instance, and you read the RDS manual about 
 this feature, you might think "this isn't for me", since the manual only explains how to connect with the 
-[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.html](`mysql` command line client) and 
+[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.html](mysql command line client) and 
 [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html](Java).
 
 ## Tell me how it works
@@ -35,9 +35,9 @@ Basically you need to create an RDS with the "IAM database authentication" featu
 }
 ```
 
-`AWS\_ACCOUNT\_ID__` is your 12 digit AWS account identifier, which you can find in the upper right part of the AWS console (or in any ARN for your resources. See below in the example how you can obtain it).
+`AWS_ACCOUNT_ID` is your 12 digit AWS account identifier, which you can find in the upper right part of the AWS console (or in any ARN for your resources. See below in the example how you can obtain it).
 
-`RDS\_INSTANCE\_ID` is the name of an RDS instance, or `*` to grant permission to authenticate to any RDS instance
+`RDS_INSTANCE_ID` is the name of an RDS instance, or `*` to grant permission to authenticate to any RDS instance
 
 `DATABASEUSER` is the name of a user created in the MySQL database with a `CREATE USER` statement, and later a `GRANT`, so it can access
 some database.
@@ -83,33 +83,33 @@ aws rds create-db-instance \
 Open the RDS instance so you can connect to it
 
 ```
-RDS\_SG=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].VpcSecurityGroups[0].VpcSecurityGroupId --output text`
-MY\_IP=`curl -s http://checkip.amazonaws.com/`
-aws ec2 authorize-security-group-ingress --region $RDS\_REGION --group-id $RDS\_SG --protocol all --port 3306 --cidr $MY\_IP/32
+RDS_SG=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].VpcSecurityGroups[0].VpcSecurityGroupId --output text`
+MY_IP=`curl -s http://checkip.amazonaws.com/`
+aws ec2 authorize-security-group-ingress --region $RDS_REGION --group-id $RDS_SG --protocol all --port 3306 --cidr $MY_IP/32
 ```
 
 Create an IAM user with a policy that will let us connect to the database
 
 ```
-IAM\_USER=rdsiamtest
-aws iam create-user --user-name $IAM\_USER
-AWS\_ACCOUNT\_ID=`aws iam get-user --user-name $IAM_USER --query User.Arn --output text | cut -d: -f5`
-RDS\_RESOURCE\_ID=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].DbiResourceId --output text`
-DB\_CONNECT\_USER=dbiamuser
+IAM_USER=rdsiamtest
+aws iam create-user --user-name $IAM_USER
+AWS_ACCOUNT_ID=`aws iam get-user --user-name $IAM_USER --query User.Arn --output text | cut -d: -f5`
+RDS_RESOURCE_ID=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].DbiResourceId --output text`
+DB_CONNECT_USER=dbiamuser
 
-IAM\_POLICY\_ARN=`aws iam create-policy --policy-name ${IAM_USER} --policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"rds-db:connect\"],\"Resource\":[\"arn:aws:rds-db:eu-west-1:$AWS_ACCOUNT_ID:dbuser:$RDS_RESOURCE_ID/$DB_CONNECT_USER\"]}]}" --query Policy.Arn --output text`
-aws iam attach-user-policy --user-name $IAM\_USER --policy-arn $IAM\_POLICY\_ARN
-AWS\_SECRET\_KEY=`aws iam create-access-key --user-name $IAM_USER --output text --query AccessKey.SecretAccessKey`
-AWS\_ACCESS\_KEY=`aws iam list-access-keys --user-name $IAM_USER --output text --query AccessKeyMetadata[0].AccessKeyId`
+IAM_POLICY_ARN=`aws iam create-policy --policy-name ${IAM_USER} --policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"rds-db:connect\"],\"Resource\":[\"arn:aws:rds-db:eu-west-1:$AWS_ACCOUNT_ID:dbuser:$RDS_RESOURCE_ID/$DB_CONNECT_USER\"]}]}" --query Policy.Arn --output text`
+aws iam attach-user-policy --user-name $IAM_USER --policy-arn $IAM_POLICY_ARN
+AWS_SECRET_KEY=`aws iam create-access-key --user-name $IAM_USER --output text --query AccessKey.SecretAccessKey`
+AWS_ACCESS_KEY=`aws iam list-access-keys --user-name $IAM_USER --output text --query AccessKeyMetadata[0].AccessKeyId`
 ```
 
 Now we're going to create a MySQL user that lets you connect to the database with `dbiamuser`. Wait for the RDS instance to be completely created before executing the following commands.
 
 ```
-DB\_HOST=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].Endpoint.Address --output text`
+DB_HOST=`aws rds describe-db-instances --region $RDS_REGION --db-instance-identifier $RDS_NAME --query DBInstances[0].Endpoint.Address --output text`
 
-echo "CREATE USER $DB\_CONNECT\_USER IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'" | mysql -h $DB_HOST -u $DB_ROOT_USER -p$DB_ROOT_PASS
-echo "GRANT ALL ON $DB\_NAME.* TO $DB_CONNECT_USER@'%'" | mysql -h $DB_HOST -u $DB_ROOT_USER -p$DB_ROOT_PASS
+echo "CREATE USER $DB_CONNECT_USER IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'" | mysql -h $DB_HOST -u $DB_ROOT_USER -p$DB_ROOT_PASS
+echo "GRANT ALL ON $DB_NAME.* TO $DB_CONNECT_USER@'%'" | mysql -h $DB_HOST -u $DB_ROOT_USER -p$DB_ROOT_PASS
 ```
 
 And now "la piece de résistance"! We're going to connect to the RDS instance with Perl! There us a script in this repository that will connect you to the RDS instance, calculating the signature beforehand.
