@@ -37,7 +37,7 @@ Basically you need to create an RDS with the "IAM database authentication" featu
 
 `AWS_ACCOUNT_ID` is your 12 digit AWS account identifier, which you can find in the upper right part of the AWS console (or in any ARN for your resources. See below in the example how you can obtain it).
 
-`RDS_INSTANCE_ID` is the name of an RDS instance, or `*` to grant permission to authenticate to any RDS instance
+`RDS_INSTANCE_ID` is the RDS "Resource Id" (watch out! It's not the RDS instance name!) of an RDS instance, or `*` to grant permission to authenticate to any RDS instance.
 
 `DATABASEUSER` is the name of a user created in the MySQL database with a `CREATE USER` statement, and later a `GRANT`, so it can access
 some database.
@@ -125,6 +125,10 @@ Note: if you get an errors talking about "can't use DBI" or "can't find the mysq
 - The first time you connect, there will be a small delay, but don't despair. Subsequent connections are immediate
 - The fact that you have to connect to the database to enable a user to connect with IAM credentials can be a bit frustrating if you're creating new RDS instances, via CloudFormation, for example. A workaround can be creating the RDS instances from database snapshots that already have the users created.
 - If the instance that connects to your RDS is running in EC2 or ECS don't generate an IAM user, and instead use an IAM Role so that you don't have to manage the Access and Secret keys!
+- Administrative IAM users (all actions on all resources) will also be able to authenticate to your RDS instance with any IAM-enabled user. This may not be appearant when you enable the IAM authentication feature.
+- The fact that and IAM user can authenticate on an instance doesn't mean he can do so from any place. Remember that Security Groups have to be properly open to the origin of the connection
+- When creating the IAM policy, the IAM console warns about the policy "not granting any permissions", and the service "rds-db" not being recognized. Don't worry about it (just check that your policy is correct), as the policy validators don't seem to know about these policies yet.
+- The first time I built a restrictive IAM policy for connecting to an RDS instance I put the RDS instance name in the place of the RDS_RESOURCE_ID field `arn:aws:rds-db:eu-west-1:$AWS_ACCOUNT_ID:dbuser:$RDS_RESOURCE_ID/$DB_CONNECT_USER`. They are not the same (and thus the policy won't work). To find the correct RDS_RESOURCE_ID, you have to look in the Details section of your RDS instance.
 
 ## More info
 
