@@ -18,8 +18,8 @@ RDS databases start out with one initial user and password that you have configu
 
 If you like the idea of using IAM credentials to connect to your RDS instance, and you read the RDS manual about 
 this feature, you might think "this isn't for me", since the manual only explains how to connect with the 
-[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.html](mysql command line client) and 
-[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html](Java).
+[mysql command line client](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.AWSCLI.html) and 
+[Java](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html).
 
 ## Tell me how it works
 
@@ -134,9 +134,9 @@ Note: if you get an errors talking about "can't use DBI" or "can't find the mysq
 
 ## More info
 
-[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.Java.html](How to generate auth tokens)
+[How to generate auth tokens](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.Java.html)
 
-[https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html](Notes on how to build the IAM policy)
+[Notes on how to build the IAM policy](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html)
 
 ## Author, Copyright and License
 
