@@ -57,7 +57,9 @@ For added protection, you __have__ to encrypt the MySQL connection to use the IA
 
 ## Show me how to do it!
 
-Create an RDS instance with MySQL
+These instructions are made so you can copy and paste them into your console session. You need the `aws` command line client installed and configured.
+
+First we create an RDS instance with MySQL
 ```
 RDS_NAME=RDSIAMTest
 RDS_REGION=eu-west-1
