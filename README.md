@@ -37,7 +37,7 @@ Basically, you need to create an RDS with the "IAM database authentication" feat
 
 `AWS_ACCOUNT_ID` is your 12 digit AWS account identifier, which you can find in the upper right part of the AWS console (or in any ARN for your resources. See below in the example how you can obtain it).
 
-`RDS_INSTANCE_ID` is the RDS "Resource Id" (watch out! It's not the RDS instance name!) of an RDS instance, or `*` to grant permission to authenticate to an RDS instance.
+`RDS_INSTANCE_ID` is the RDS "Resource Id" (watch out! It's not the RDS instance name!) of an RDS instance, or `*` to grant permission to authenticate to any RDS instance.
 
 `DATABASEUSER` is the name of a user created in the MySQL database with a `CREATE USER` statement, and later a `GRANT`, so it can access
 some database.
